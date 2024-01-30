@@ -1,0 +1,6 @@
+EDASpy-mod (al instalarlo coge mazo de las dependencias que necesita)
+scipy
+pandas
+matplotlib
+pybnesian
+pgmpy
