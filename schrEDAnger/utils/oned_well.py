@@ -64,20 +64,32 @@ def compute_z_triangles(
 
     interval_size = well_length / (len(psi) - 1)
 
+
     ### INTEGRAL CALCULATION ###
 
-    # First step (second derivative is computed setting terms out of the array to zero)
-    energy_exp = (1/(4*interval_size))*((psi[0] * (psi[1] - 2 * psi[0]))+(psi[1] * (psi[0] + psi[2] - 2 * psi[1])))
+    # # First step (second derivative is computed setting terms out of the array to zero)
+    # energy_exp = (-1/(4*interval_size))*((psi[0] * (psi[1] - 2 * psi[0]))+(psi[1] * (psi[0] + psi[2] - 2 * psi[1])))
+    # j = (psi[0] ** 2 + psi[1] ** 2) * interval_size / 2
+
+    energy_exp = (-1/(4*interval_size))*((psi[0] * (psi[0] - 2 * psi[1] + psi[2]))+(psi[1] * (psi[0] + psi[2] - 2 * psi[1])))
     j = (psi[0] ** 2 + psi[1] ** 2) * interval_size / 2
 
+
     # Middle steps
-    for i in range(1, len(psi)-2):
-        energy_exp += (1/(4*interval_size))*((psi[i] * (psi[i - 1] + psi[i + 1] - 2 * psi[i]))+(psi[i+1] * (psi[i] + psi[i+2] - 2 * psi[i+1])))
+    for i in range(1, len(psi)-3): #antes -2
+        energy_exp += (-1/(4*interval_size))*((psi[i] * (psi[i - 1] + psi[i + 1] - 2 * psi[i]))+(psi[i+1] * (psi[i] + psi[i+2] - 2 * psi[i+1])))
         j += (psi[i] ** 2 + psi[i + 1] ** 2) * interval_size / 2
         
-    # Final step (second derivative is computed setting terms out of the array to zero)
-    energy_exp += (1/(4*interval_size))*((psi[-2] * (psi[-3] + psi[-1] - 2 * psi[-2]))+(psi[-1] * (psi[-2] - 2 * psi[-1])))
+    # # Final step (second derivative is computed setting terms out of the array to zero)
+    # energy_exp += (1/(4*interval_size))*((psi[-2] * (psi[-3] + psi[-1] - 2 * psi[-2]))+(psi[-1] * (psi[-2] - 2 * psi[-1])))
+    # j += (psi[-2] ** 2 + psi[-1] ** 2) * interval_size / 2
+    
+    ##outside loop terms (outside box psi=0)
+    energy_exp += (-1/(4*interval_size))*((psi[-2] * (psi[-3] + psi[-1] - 2 * psi[-2]))+(psi[-1] * (psi[-3] - 2 * psi[-2] + psi[-1])))
     j += (psi[-2] ** 2 + psi[-1] ** 2) * interval_size / 2
+
+    energy_exp += (-1/(4*interval_size))*psi[-1]*(psi[-3]+psi[-1]- 2 * psi[-2])
+    j += psi[-1]**2 * interval_size / 2 
 
     ### INTEGRAL CALCULATION ###
 
